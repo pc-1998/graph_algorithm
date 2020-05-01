@@ -131,7 +131,7 @@ def solve(G):
     G_copy = G.copy()
     for edge in G_copy.edges.data():
         u, v = edge[0], edge[1]
-        edge[2]['weight'] /= np.log(max(G_copy.degree(u), G_copy.degree(v)))
+        edge[2]['weight'] /= np.log(max(G_copy.eccentricity(u), G_copy.eccentricity(v)))
     T = nx.minimum_spanning_tree(G_copy)
     for edge in T.edges.data():
         u, v = edge[0], edge[1]
@@ -206,7 +206,7 @@ def solve(G):
 
 if __name__ == '__main__':
 
-    input_folder_path = '/Users/chenpengyuan/Desktop/CS170/project-sp20-skeleton/inputs'
+    input_folder_path = 'inputs'
     for input_file in os.listdir(input_folder_path):
         print(input_file)
         full_path = os.path.join(input_folder_path, input_file)
@@ -214,7 +214,7 @@ if __name__ == '__main__':
         T = solve(G)
         assert is_valid_network(G, T), "T is not a valid network of G."
         print("Average  pairwise distance: {}".format(average_pairwise_distance(T)))
-        write_output_file(T, '/Users/chenpengyuan/Desktop/CS170/project-sp20-skeleton/outputs/' + input_file[:-2] + 'out')
+        write_output_file(T, 'outputs/' + input_file[:-2] + 'out')
 
     # path = '/Users/chenpengyuan/Desktop/CS170/project-sp20-skeleton/inputs/small-241.in'
     # G = read_input_file(path)
