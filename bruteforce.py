@@ -1,6 +1,7 @@
 import itertools
 import networkx as nx
 from utils import is_valid_network, average_pairwise_distance, average_pairwise_distance_fast
+from solver import solve
 
 def bruteforce(G):
     def findChain(G):
@@ -26,8 +27,12 @@ def bruteforce(G):
         nonlocal min_dist
         nonlocal minT
         has_valid = False
+        count = 0
         for c in itertools.combinations(G_copy.edges(), k):
             temp = copy.copy()
+            if count >= 10000:
+                return solve(G)
+            count += 1
             for e in c:
                 u, v = e[0], e[1]
                 if copy.degree(u) == 1:
