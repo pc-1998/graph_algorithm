@@ -181,7 +181,7 @@ def solve(G):
         G_copy[u][v]['weight'] /= (G_copy.degree(u) + G_copy.degree(v)) / 2
         G_copy[u][v]['weight'] *= (nx.eccentricity(G, u) + nx.eccentricity(G, v)) / 2
         G_copy[u][v]['weight'] /= np.exp(nx.edge_betweenness_centrality(G, k=5, weight='weight')[edge])
-        G_copy[u][v]['weight'] *= random.uniform(0.2, 2.8)
+        G_copy[u][v]['weight'] *= random.uniform(0.5, 2)
 
     #     T = nx.Graph()
     #     all_shortest_path_lengths = dict(nx.shortest_path_length(G, weight='weight'))
@@ -341,7 +341,7 @@ if __name__ == '__main__':
     #             if dist_old > dist_new:
     #                 write_output_file(T, 'outputs/' + input_file[:-2] + 'out')
 
-    file_list = "medium-150, medium-151, medium-152, medium-153, medium-154, medium-155, medium-156, medium-157, medium-158, medium-160, medium-161, medium-162, medium-163, medium-166, medium-167, medium-168, medium-169, medium-170, medium-171, medium-172, medium-173, medium-174"
+    file_list = "large-121, large-122, large-124, large-126, large-128, large-129, large-130, large-133, large-134, large-135, large-136, large-137, large-139"
     files = file_list.split(', ')
     for file in files:
         print(file)
