@@ -8,4 +8,3 @@ Files:
   For multiple inputs, put them in the same string separated by commas (e.g. file_list = "small-1, large-2"), and run the same command in the terminal. 
 - `solver.ipynb`: contains the exact same code as `solver.py`, so that things can be run in jupyter notebook. 
   To solve for inputs, type the input name in the same way as for `solver.py` and then simply run the cell. 
-

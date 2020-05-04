@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import random
 import numpy as np
 import itertools
+import time
 
 
 def bruteforce(G):
@@ -180,8 +181,8 @@ def solve(G):
         u, v = edge[0], edge[1]
         G_copy[u][v]['weight'] /= (G_copy.degree(u) + G_copy.degree(v)) / 2
         G_copy[u][v]['weight'] *= (nx.eccentricity(G, u) + nx.eccentricity(G, v)) / 2
-        G_copy[u][v]['weight'] /= np.exp(nx.edge_betweenness_centrality(G, k=5, weight='weight')[edge])
-        G_copy[u][v]['weight'] *= random.uniform(0.5, 2)
+        G_copy[u][v]['weight'] /= np.exp(nx.edge_betweenness_centrality(G, k=8, weight='weight')[edge])
+        G_copy[u][v]['weight'] *= random.uniform(0.2, 3.8)
 
     #     T = nx.Graph()
     #     all_shortest_path_lengths = dict(nx.shortest_path_length(G, weight='weight'))
@@ -234,8 +235,40 @@ def solve(G):
         T.remove_node(node)
         return T
     else:
-        for i in range(100):
-            prune(T.copy())
+        # for i in range(100):
+        #     prune(T.copy())
+
+        #         for v in G.nodes():
+        #             if nx.eccentricity(G, v, all_shortest_path_lengths) / G.number_of_nodes() < dist:
+        #                 T.add_node(v)
+        #                 edge_list = [(u, v) for u in T.nodes() if G.has_edge(u, v)]
+        #                 r = random.randint(0, len(edge_list))
+        #                 edges_to_add = random.sample(edge_list, r)
+        #                 for e in edge_list:
+        #                     if G[e[0]][e[1]]['weight'] < dist:
+        #                         edges_to_add.append(e)
+        #                 for e in edges_to_add:
+        #                     T.add_edge(e[0], e[1], weight=G[e[0]][e[1]]['weight'])
+
+        #         # Add some edges with lower weights
+        #         all_shortest_path_lengths = dict(nx.shortest_path_length(G, weight='weight'))
+        #         all_shortest_paths = nx.shortest_path(G, weight='weight')
+        #         dist = average_pairwise_distance_fast(T)
+        #         min_T = T.copy()
+        #         for i in range(100):
+        #             T = min_T.copy()
+        #             edge_list = list(G.edges())
+        #             random.shuffle(edge_list)
+        #             for e in edge_list:
+        #                 if e in T.edges(): continue
+        #                 copy = T.copy()
+        #                 copy.add_edge(e[0], e[1], weight=G[e[0]][e[1]]['weight'])
+        #                 if is_valid_network(G, copy):
+        #                     if average_pairwise_distance_fast(T) > average_pairwise_distance_fast(copy):
+        #                         T = copy.copy()
+        #                 else: break
+        #             if average_pairwise_distance_fast(T) < average_pairwise_distance_fast(min_T):
+        #                 min_T = T.copy()
 
         def findChain(G):
             nonlocal confirmed
@@ -266,12 +299,6 @@ def solve(G):
                         min_T = copy.copy()
                     break
                 T = copy.copy()
-                edge_weights = []
-                for e in T.edges():
-                    if e[0] in confirmed and e[1] in confirmed:
-                        edge_weights.append(0)
-                    else:
-                        edge_weights.append(np.exp(1 + G[e[0]][e[1]]['weight']))
                 edge = random.choices(list(T.edges()))[0]
                 if T.degree(edge[0]) == 1:
                     copy.remove_node(edge[0])
@@ -284,29 +311,10 @@ def solve(G):
                 if is_valid_network(G, copy):
                     if utils.average_pairwise_distance_fast(copy) < utils.average_pairwise_distance_fast(min_T):
                         min_T = copy.copy()
-
+        # prune(T)
+        # added
         #         min_T.remove_edge(20, 21)
         #         min_T.add_edge(13, 17)
-
-        #         # Add some edges with lower weights
-        #         all_shortest_path_lengths = dict(nx.shortest_path_length(G, weight='weight'))
-        #         all_shortest_paths = nx.shortest_path(G, weight='weight')
-        #         dist = average_pairwise_distance_fast(T)
-        #         min_T = T.copy()
-        #         for i in range(100):
-        #             T = min_T.copy()
-        #             edge_list = list(G.edges())
-        #             random.shuffle(edge_list)
-        #             for e in edge_list:
-        #                 if e in T.edges(): continue
-        #                 copy = T.copy()
-        #                 copy.add_edge(e[0], e[1], weight=G[e[0]][e[1]]['weight'])
-        #                 if is_valid_network(G, copy):
-        #                     if average_pairwise_distance_fast(T) > average_pairwise_distance_fast(copy):
-        #                         T = copy.copy()
-        #                 else: break
-        #             if average_pairwise_distance_fast(T) < average_pairwise_distance_fast(min_T):
-        #                 min_T = T.copy()
 
         return min_T
         # TODO: your code here!
@@ -341,7 +349,7 @@ if __name__ == '__main__':
     #             if dist_old > dist_new:
     #                 write_output_file(T, 'outputs/' + input_file[:-2] + 'out')
 
-    file_list = "large-121, large-122, large-124, large-126, large-128, large-129, large-130, large-133, large-134, large-135, large-136, large-137, large-139"
+    file_list = "medium-242, medium-239, medium-238, medium-237, medium-233, medium-232, medium-230"
     files = file_list.split(', ')
     for file in files:
         print(file)
@@ -349,7 +357,8 @@ if __name__ == '__main__':
         # path = 'inputs/small-4.in'
         G = read_input_file(path)
         Tree_list = []
-        for i in range(100):
+        timeout = time.time() + 60
+        while time.time() < timeout:
             Tree_list.append(solve(G))
         T = min(Tree_list, key=lambda t: average_pairwise_distance_fast(t))
 
